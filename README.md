@@ -1,0 +1,2 @@
+# coincalculator
+JavaScript Coin Calculator
