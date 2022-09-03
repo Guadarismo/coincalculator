@@ -15,7 +15,7 @@
 <script type="text/javascript">
 
 /*Gov coins*/
-var arrgetusd, arrgeteur, arrgetves, GETCAD, getbrl, getcop, GETARS, getclp, GETVESATMNTDOLVZLA;
+var arrgetusd, arrgeteur, arrgetves, GETCAD, getbrl, getcop, GETARS, getclp, GETVESATMNTDOLVZLA, GETSATVES;
 
 var bitvenref = 0;
 
@@ -101,7 +101,6 @@ fetch('https://3rdparty-apis.coinmarketcap.com/v1/cryptocurrency/widget?id=1&con
 
 }
 
-
 /*
 var GETVESAT = (arrgetves / GETSAT).toFixed(4);
 var REFUSDSAT = ((1 / arrgetusd) * GETSAT).toFixed(4);
@@ -109,6 +108,7 @@ var getrefcmc = arrgetves/arrgetusd;
 */
 setTimeout(() => {
    resumen();
+   democalc();
 }, 2000);
 
 setInterval(() => {
@@ -119,16 +119,7 @@ setInterval(() => {
    resumen()
 }, 62000);
 
-
-function resumen() {
-
-GETVESATMNTDOLVZLA = ((GETMNTDOLVZLA * arrgetusd) / GETSAT).toFixed(4);
-$("#GETUSD").text((arrgetusd).toFixed(2));
-$("#GETEUR").text((arrgeteur).toFixed(2));
-$("#refcmc").text('CMC: ' + getrefcmc);
-$("#GETVESAT").text(GETVESATMNTDOLVZLA);
-$("#REFUSDSAT").text(REFUSDSAT);
-
+function democalc() {
 	let ak = 1;
 	$("#SAT").val(ak);
 
@@ -166,12 +157,24 @@ $("#REFUSDSAT").text(REFUSDSAT);
 	$("#YFI").val((ak * (GETYFI / GETSAT)).toFixed(8));
 	$("#TRX").val((ak * (GETTRX / GETSAT)).toFixed(8));
 }
+
+
+function resumen() {
+
+GETVESATMNTDOLVZLA = ((GETMNTDOLVZLA * arrgetusd) / GETSAT).toFixed(4);
+GETSATVES = (( 1 / (GETMNTDOLVZLA * arrgetusd)) * GETSAT).toFixed(4);
+$("#GETUSD").text((arrgetusd).toFixed(2));
+$("#GETEUR").text((arrgeteur).toFixed(2));
+$("#refcmc").text('CMC: ' + getrefcmc);
+$("#GETVESAT").text(GETVESATMNTDOLVZLA);
+$("#REFUSDSAT").text(REFUSDSAT);
+
+$("#GETSATVES").text(GETSATVES);
+
+}
 traer();
 
-
 $(document).ready( () => {
-
-//setTimeout(resumen(),5000);
 
 $("#USD").keyup(function () {
     let ak = $(this).val();
@@ -1393,11 +1396,15 @@ $("#VESMNTDOLVZLA").keyup(function () {
 
 🇻🇪 Coinautas Unidos 🇺🇸 Coinauts United 🇪🇺 硬幣太空人 和睦的<br>
 Precio BTC en $:
-<div id="GETUSD">Loading...</div><br>
+<b><div id="GETUSD">Loading...</div></b><br>
 Precio BTC en EUR:
 <div id="GETEUR">Loading...</div><br>
 1 Satoshi en VES ref <a href="https://monitordolarvenezuela.com/">MDV</a>:
 <div id="GETVESAT" style="white-space: pre;">Loading...</div><br>
+
+Precio de 1 Bs en Satoshis:
+<div id="GETSATVES">Loading...</div><br>
+
 Precio de 1$ en Satoshis:
 <div id="REFUSDSAT">Loading...</div><br>
 
@@ -1423,12 +1430,12 @@ Precio de 1$ en Satoshis:
   <tbody>
     <tr>
       <th> 🇺🇸</th>
-      <td><div align="right">$</div></td>
+      <td><div align="right">$ USD</div></td>
       <td><input name="number25" type="number" id="USD"/>
     </tr>
     <tr>
       <th> 🇪🇺</th>
-      <td><div align="right">€</div></td>
+      <td><div align="right">€ EUR</div></td>
       <td><input name="number24" type="number" id="EUR"/>
     </tr>
     <tr>
