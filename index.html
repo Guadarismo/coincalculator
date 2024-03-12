@@ -6,12 +6,13 @@
 <meta name="viewport" content="width=device-width">
 <title>Coinautas Unidos</title>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"/>
-<script type="text/javascript" src="https://dxj1e0bbbefdtsyig.woldrssl.net/custom/rate.js">//Pag DolToday</script>
-<script type="text/javascript" src="https://noorpublicidad.com/tmp/mntvnzla/index.php">//scrapping pag Monitor Dolar Venezuela</script>
+<!-- <script type="text/javascript" src="https://dxj1e0bbbefdtsyig.woldrssl.net/custom/rate.js">//Pag DolToday</script> -->
+<!-- <script type="text/javascript" src="https://noorpublicidad.com/tmp/mntvnzla/index.php">//scrapping pag Monitor Dolar Venezuela</script> -->
 <!--<script type="text/javascript" src="data.js"/>-->
 </head>
 <body>
-<script type="text/javascript" src="https://dxj1e0bbbefdtsyig.woldrssl.net/custom/rate.js">//Pag DolToday</script>
+<script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script><div class="coinmarketcap-currency-widget" data-currencyid="1" data-base="USD" data-secondary="" data-ticker="true" data-rank="true" data-marketcap="true" data-volume="true" data-statsticker="true" data-stats="USD"></div>
+<!-- <script type="text/javascript" src="https://dxj1e0bbbefdtsyig.woldrssl.net/custom/rate.js">//Pag DolToday</script> -->
 <script type="text/javascript">
 
 /*Gov coins*/
@@ -25,13 +26,13 @@ var GETBOLI, GETAREPA, GETDOGE, GETETH, GETBAT, GETXMR, GETDASH, GETADA, GETLTC,
 
 /*Variables traidas de pag DolToday*/
 
-var GETDOLTODAY = dolartoday.USD.dolartoday;
-var GETDOLTODAYBTC = dolartoday.USD.bitcoin_ref;
-var GETDOLTODAYLOCBTC = dolartoday.USD.localbitcoin_ref;
+var GETDOLTODAY = 0;
+var GETDOLTODAYBTC = 0;
+var GETDOLTODAYLOCBTC = 0;
 
 /*Variable traida de Monitor Dolar Venezuela*/
 
-var GETMNTDOLVZLA = mntvzla.usd_to_ves_price;
+var GETMNTDOLVZLA = 0;
 /*var GETVESATMNTDOLVZLA = ((GETMNTDOLVZLA*arrgetusd) / GETSAT).toFixed(4);*/
 
 function traer() {
@@ -161,8 +162,8 @@ function democalc() {
 
 function resumen() {
 
-GETVESATMNTDOLVZLA = ((GETMNTDOLVZLA * arrgetusd) / GETSAT).toFixed(4);
-GETSATVES = (( 1 / (GETMNTDOLVZLA * arrgetusd)) * GETSAT).toFixed(4);
+GETVESATMNTDOLVZLA = ((getrefcmc * arrgetusd) / GETSAT).toFixed(4);
+GETSATVES = (( 1 / (getrefcmc * arrgetusd)) * GETSAT).toFixed(4);
 $("#GETUSD").text((arrgetusd).toFixed(2));
 $("#GETEUR").text((arrgeteur).toFixed(2));
 $("#refcmc").text('CMC: ' + getrefcmc);
