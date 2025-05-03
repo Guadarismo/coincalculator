@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html>
 <head>
@@ -6,16 +7,17 @@
 <meta name="viewport" content="width=device-width">
 <title>Coinautas Unidos</title>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"/>
-<script type="text/javascript" src="https://dxj1e0bbbefdtsyig.woldrssl.net/custom/rate.js">//Pag DolToday</script>
-<script type="text/javascript" src="https://noorpublicidad.com/tmp/mntvnzla/index.php">//scrapping pag Monitor Dolar Venezuela</script>
+<!-- <script type="text/javascript" src="https://dxj1e0bbbefdtsyig.woldrssl.net/custom/rate.js">//Pag DolToday</script> -->
+<!-- <script type="text/javascript" src="https://noorpublicidad.com/tmp/mntvnzla/index.php">//scrapping pag Monitor Dolar Venezuela</script> -->
 <!--<script type="text/javascript" src="data.js"/>-->
 </head>
 <body>
-<script type="text/javascript" src="https://dxj1e0bbbefdtsyig.woldrssl.net/custom/rate.js">//Pag DolToday</script>
+<script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script><div class="coinmarketcap-currency-widget" data-currencyid="1" data-base="USD" data-secondary="" data-ticker="true" data-rank="true" data-marketcap="true" data-volume="true" data-statsticker="true" data-stats="USD"></div>
+<!-- <script type="text/javascript" src="https://dxj1e0bbbefdtsyig.woldrssl.net/custom/rate.js">//Pag DolToday</script> -->
 <script type="text/javascript">
 
 /*Gov coins*/
-var arrgetusd, arrgeteur, arrgetves, GETCAD, getbrl, getcop, GETARS, getclp, GETVESATMNTDOLVZLA, GETSATVES;
+var arrgetusd, arrgeteur, arrgetves, GETCAD, getbrl, getcop, GETARS, getclp, GETVESATMNTDOLVZLA, GETSATVES, GETCNY;
 
 var bitvenref = 0;
 
@@ -25,18 +27,18 @@ var GETBOLI, GETAREPA, GETDOGE, GETETH, GETBAT, GETXMR, GETDASH, GETADA, GETLTC,
 
 /*Variables traidas de pag DolToday*/
 
-var GETDOLTODAY = dolartoday.USD.dolartoday;
-var GETDOLTODAYBTC = dolartoday.USD.bitcoin_ref;
-var GETDOLTODAYLOCBTC = dolartoday.USD.localbitcoin_ref;
+var GETDOLTODAY = 0;
+var GETDOLTODAYBTC = 0;
+var GETDOLTODAYLOCBTC = 0;
 
 /*Variable traida de Monitor Dolar Venezuela*/
 
-var GETMNTDOLVZLA = mntvzla.usd_to_ves_price;
+var GETMNTDOLVZLA = 0;
 /*var GETVESATMNTDOLVZLA = ((GETMNTDOLVZLA*arrgetusd) / GETSAT).toFixed(4);*/
 
 function traer() {
 /*Fetch gov coins*/
-fetch('https://3rdparty-apis.coinmarketcap.com/v1/cryptocurrency/widget?id=1&convert_id=1,2781,2790,3573,2784,2783,2820,2821,2786')
+fetch('https://3rdparty-apis.coinmarketcap.com/v1/cryptocurrency/widget?id=1&convert_id=1,2781,2790,3573,2784,2783,2820,2821,2786,2787')
 .then(
     (response) => {
      (response.status !== 200) 
@@ -57,6 +59,7 @@ fetch('https://3rdparty-apis.coinmarketcap.com/v1/cryptocurrency/widget?id=1&con
 		getcop = data['data']['1']['quote']['2820']['price'];
 		GETARS = data['data']['1']['quote']['2821']['price'];
 		getclp = data['data']['1']['quote']['2786']['price'];
+		GETCNY = data['data']['1']['quote']['2787']['price'];
 		GETSAT = 100000000;
 		//GETVESAT = (arrgetves / GETSAT).toFixed(4);
 		REFUSDSAT = ((1 / arrgetusd) * GETSAT).toFixed(2);
@@ -124,6 +127,7 @@ function democalc() {
 	$("#SAT").val(ak);
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETSAT)).toFixed(8));
     $("#USD").val((ak * (arrgetusd / GETSAT)).toFixed(8));
     $("#EUR").val((ak * (arrgeteur / GETSAT)).toFixed(8));
     $("#CAD").val((ak * (GETCAD / GETSAT)).toFixed(8));
@@ -161,8 +165,8 @@ function democalc() {
 
 function resumen() {
 
-GETVESATMNTDOLVZLA = ((GETMNTDOLVZLA * arrgetusd) / GETSAT).toFixed(4);
-GETSATVES = (( 1 / (GETMNTDOLVZLA * arrgetusd)) * GETSAT).toFixed(4);
+GETVESATMNTDOLVZLA = ((getrefcmc * arrgetusd) / GETSAT).toFixed(4);
+GETSATVES = (( 1 / (getrefcmc * arrgetusd)) * GETSAT).toFixed(4);
 $("#GETUSD").text((arrgetusd).toFixed(2));
 $("#GETEUR").text((arrgeteur).toFixed(2));
 $("#refcmc").text('CMC: ' + getrefcmc);
@@ -176,10 +180,52 @@ traer();
 
 $(document).ready( () => {
 
+$("#CNY").keyup(function () {
+    let ak = $(this).val();
+
+    /*gubernamentales*/
+	//$("#CNY").val((ak * (GETCNY / arrgeteur)).toFixed(4));
+	$("#EUR").val((ak * (arrgeteur / GETCNY)).toFixed(4));
+    $("#USD").val((ak * (arrgetusd / GETCNY)).toFixed(4));
+    $("#CAD").val((ak * (GETCAD / GETCNY)).toFixed(4));
+    $("#BRL").val((ak * (getbrl / GETCNY)).toFixed(4));
+    $("#COP").val((ak * (getcop / GETCNY)).toFixed(4));
+    $("#VESCMC").val((ak * (arrgetves / GETCNY)).toFixed(4));
+    $("#VESBITVEN").val((ak * ((bitvenref * (arrgetusd / GETCNY)))).toFixed(4));
+    $("#ARS").val((ak * (GETARS / GETCNY)).toFixed(4));
+    $("#CLP").val((ak * (getclp / GETCNY)).toFixed(4));
+	$("#VESDOLTODAY").val((ak * (0)).toFixed(4));
+	$("#VESDOLTODAYBTC").val((ak * ((GETDOLTODAYBTC * (arrgetusd / GETCNY)))).toFixed(4));
+	$("#VESDOLTODAYLOCBTC").val((ak * ((GETDOLTODAYLOCBTC * (arrgetusd / GETCNY)))).toFixed(4));
+	$("#VESMNTDOLVZLA").val((ak * ((GETMNTDOLVZLA * (arrgetusd / GETCNY)))).toFixed(4));
+
+    /*eCoins:*/
+    $("#BTC").val((ak / GETCNY).toFixed(8));
+    $("#SAT").val(((ak / GETCNY) * GETSAT).toFixed(4));
+    $("#BOLI").val((ak * (GETBOLI / GETCNY)).toFixed(8));
+    $("#AREPA").val((ak * (GETAREPA / GETCNY)).toFixed(8));
+    $("#DOGE").val((ak * (GETDOGE / GETCNY)).toFixed(8));
+    $("#ETH").val((ak * (GETETH / GETCNY)).toFixed(8));
+    $("#BAT").val((ak * (GETBAT / GETCNY)).toFixed(8));
+    $("#LTC").val((ak * (GETLTC / GETCNY)).toFixed(8));
+    $("#XMR").val((ak * (GETXMR / GETCNY)).toFixed(8));
+    $("#DASH").val((ak * (GETDASH / GETCNY)).toFixed(8));
+    $("#ADA").val((ak * (GETADA / GETCNY)).toFixed(8));
+    $("#PIVX").val((ak * (GETPIVX / GETCNY)).toFixed(8));
+    $("#STEEM").val((ak * (GETSTEEM / GETCNY)).toFixed(8));
+    $("#BTT").val((ak * (GETBTT / GETCNY)).toFixed(8));
+    $("#FIL").val((ak * (GETFIL / GETCNY)).toFixed(8));
+    $("#LBC").val((ak * (GETLBC / GETCNY)).toFixed(8));
+	$("#YFI").val((ak * (GETYFI / GETCNY)).toFixed(8));
+	$("#TRX").val((ak * (GETTRX / GETCNY)).toFixed(8));
+
+});
+
 $("#USD").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / arrgetusd)).toFixed(4));
     $("#EUR").val((ak * (arrgeteur / arrgetusd)).toFixed(4));
     $("#CAD").val((ak * (GETCAD / arrgetusd)).toFixed(4));
     $("#BRL").val((ak * (getbrl / arrgetusd)).toFixed(4));
@@ -219,6 +265,7 @@ $("#BTC").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY)).toFixed(4));
     $("#USD").val((ak * (arrgetusd)).toFixed(4));
     $("#EUR").val((ak * (arrgeteur)).toFixed(4));
     $("#CAD").val((ak * (GETCAD)).toFixed(4));
@@ -259,6 +306,7 @@ $("#SAT").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETSAT)).toFixed(8));
     $("#USD").val((ak * (arrgetusd / GETSAT)).toFixed(8));
     $("#EUR").val((ak * (arrgeteur / GETSAT)).toFixed(8));
     $("#CAD").val((ak * (GETCAD / GETSAT)).toFixed(8));
@@ -298,6 +346,7 @@ $("#EUR").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / arrgeteur)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / arrgeteur)).toFixed(4));
     $("#CAD").val((ak * (GETCAD / arrgeteur)).toFixed(4));
     $("#BRL").val((ak * (getbrl / arrgeteur)).toFixed(4));
@@ -306,7 +355,7 @@ $("#EUR").keyup(function () {
     $("#VESBITVEN").val((ak * ((bitvenref * (arrgetusd / arrgeteur)))).toFixed(4));
     $("#ARS").val((ak * (GETARS / arrgeteur)).toFixed(4));
     $("#CLP").val((ak * (getclp / arrgeteur)).toFixed(4));
-	$("#VESDOLTODAY").val((ak * (dolartoday.EUR.dolartoday)).toFixed(4));
+	$("#VESDOLTODAY").val((ak * (0)).toFixed(4));
 	$("#VESDOLTODAYBTC").val((ak * ((GETDOLTODAYBTC * (arrgetusd / arrgeteur)))).toFixed(4));
 	$("#VESDOLTODAYLOCBTC").val((ak * ((GETDOLTODAYLOCBTC * (arrgetusd / arrgeteur)))).toFixed(4));
 	$("#VESMNTDOLVZLA").val((ak * ((GETMNTDOLVZLA * (arrgetusd / arrgeteur)))).toFixed(4));
@@ -337,6 +386,7 @@ $("#CAD").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETCAD)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETCAD)).toFixed(4));
     $("#EUR").val((ak * (arrgeteur / GETCAD)).toFixed(4));
     $("#BRL").val((ak * (getbrl / GETCAD)).toFixed(4));
@@ -376,6 +426,7 @@ $("#BRL").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / getbrl)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / getbrl)).toFixed(4));
     $("#EUR").val((ak * (arrgeteur / getbrl)).toFixed(4));
     $("#CAD").val((ak * (GETCAD / getbrl)).toFixed(4));
@@ -415,6 +466,7 @@ $("#COP").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / getcop)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / getcop)).toFixed(4));
     $("#EUR").val((ak * (arrgeteur / getcop)).toFixed(4));
     $("#BRL").val((ak * (getbrl / getcop)).toFixed(4));
@@ -454,6 +506,7 @@ $("#ARS").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETARS)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETARS)).toFixed(4));
     $("#EUR").val((ak * (arrgeteur / GETARS)).toFixed(4));
     $("#BRL").val((ak * (getbrl / GETARS)).toFixed(4));
@@ -493,6 +546,7 @@ $("#CLP").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / getclp)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / getclp)).toFixed(4));
     $("#EUR").val((ak * (arrgeteur / getclp)).toFixed(4));
     $("#BRL").val((ak * (getbrl / getclp)).toFixed(4));
@@ -532,6 +586,7 @@ $("#BOLI").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETBOLI)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETBOLI)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETBOLI)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETBOLI)).toFixed(5));
@@ -571,6 +626,7 @@ $("#AREPA").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETAREPA)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETAREPA)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETAREPA)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETAREPA)).toFixed(5));
@@ -610,6 +666,7 @@ $("#DOGE").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETDOGE)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETDOGE)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETDOGE)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETDOGE)).toFixed(5));
@@ -649,6 +706,7 @@ $("#ETH").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETETH)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETETH)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETETH)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETETH)).toFixed(5));
@@ -688,6 +746,7 @@ $("#BAT").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETBAT)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETBAT)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETBAT)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETBAT)).toFixed(5));
@@ -727,6 +786,7 @@ $("#LTC").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETLTC)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETLTC)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETLTC)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETLTC)).toFixed(5));
@@ -766,6 +826,7 @@ $("#XMR").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETXMR)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETXMR)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETXMR)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETXMR)).toFixed(5));
@@ -805,6 +866,7 @@ $("#DASH").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETDASH)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETDASH)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETDASH)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETDASH)).toFixed(5));
@@ -844,6 +906,7 @@ $("#ADA").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETADA)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETADA)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETADA)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETADA)).toFixed(5));
@@ -883,6 +946,7 @@ $("#PIVX").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETPIVX)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETPIVX)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETPIVX)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETPIVX)).toFixed(5));
@@ -922,6 +986,7 @@ $("#STEEM").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETSTEEM)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETSTEEM)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETSTEEM)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETSTEEM)).toFixed(5));
@@ -961,6 +1026,7 @@ $("#BTT").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETBTT)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETBTT)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETBTT)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETBTT)).toFixed(5));
@@ -1000,6 +1066,7 @@ $("#FIL").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETFIL)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETFIL)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETFIL)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETFIL)).toFixed(5));
@@ -1039,6 +1106,7 @@ $("#LBC").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETLBC)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETLBC)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETLBC)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETLBC)).toFixed(5));
@@ -1078,6 +1146,7 @@ $("#YFI").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETYFI)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETYFI)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETYFI)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETYFI)).toFixed(5));
@@ -1117,6 +1186,7 @@ $("#TRX").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / GETTRX)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / GETTRX)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / GETTRX)).toFixed(5));
     $("#BRL").val((ak * (getbrl / GETTRX)).toFixed(5));
@@ -1156,6 +1226,7 @@ $("#VESCMC").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / arrgetves)).toFixed(4));
     $("#USD").val((ak * (arrgetusd / arrgetves)).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / arrgetves)).toFixed(5));
     $("#BRL").val((ak * (getbrl / arrgetves)).toFixed(5));
@@ -1196,6 +1267,7 @@ $("#VESBITVEN").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / (bitvenref * arrgetusd))).toFixed(5));
     $("#USD").val((ak * (arrgetusd / (bitvenref * arrgetusd))).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / (bitvenref * arrgetusd))).toFixed(5));
     $("#BRL").val((ak * (getbrl / (bitvenref * arrgetusd))).toFixed(5));
@@ -1235,6 +1307,7 @@ $("#VESDOLTODAY").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / (GETDOLTODAY * arrgetusd))).toFixed(5));
     $("#USD").val((ak * (arrgetusd / (GETDOLTODAY * arrgetusd))).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / (GETDOLTODAY * arrgetusd))).toFixed(5));
     $("#BRL").val((ak * (getbrl / (GETDOLTODAY * arrgetusd))).toFixed(5));
@@ -1275,6 +1348,7 @@ $("#VESDOLTODAYBTC").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / (GETDOLTODAYBTC * arrgetusd))).toFixed(5));
     $("#USD").val((ak * (arrgetusd / (GETDOLTODAYBTC * arrgetusd))).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / (GETDOLTODAYBTC * arrgetusd))).toFixed(5));
     $("#BRL").val((ak * (getbrl / (GETDOLTODAYBTC * arrgetusd))).toFixed(5));
@@ -1314,6 +1388,7 @@ $("#VESDOLTODAYLOCBTC").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / (GETDOLTODAYLOCBTC * arrgetusd))).toFixed(5));
     $("#USD").val((ak * (arrgetusd / (GETDOLTODAYLOCBTC * arrgetusd))).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / (GETDOLTODAYLOCBTC * arrgetusd))).toFixed(5));
     $("#BRL").val((ak * (getbrl / (GETDOLTODAYLOCBTC * arrgetusd))).toFixed(5));
@@ -1355,6 +1430,7 @@ $("#VESMNTDOLVZLA").keyup(function () {
     let ak = $(this).val();
 
     /*gubernamentales*/
+	$("#CNY").val((ak * (GETCNY / (GETMNTDOLVZLA * arrgetusd))).toFixed(5));
     $("#USD").val((ak * (arrgetusd / (GETMNTDOLVZLA * arrgetusd))).toFixed(5));
     $("#EUR").val((ak * (arrgeteur / (GETMNTDOLVZLA * arrgetusd))).toFixed(5));
     $("#BRL").val((ak * (getbrl / (GETMNTDOLVZLA * arrgetusd))).toFixed(5));
@@ -1428,6 +1504,11 @@ Precio de 1$ en Satoshis:
     </tr>
   </tfoot>
   <tbody>
+    <tr>
+      <th> 🇨🇳</th>
+      <td><div align="right">¥ CNY</div></td>
+      <td><input name="number26" type="number" id="CNY"/>
+    </tr>
     <tr>
       <th> 🇺🇸</th>
       <td><div align="right">$ USD</div></td>
